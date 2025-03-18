@@ -17,32 +17,34 @@ import java.security.NoSuchAlgorithmException;
  */
 public class FinestraAdmin extends javax.swing.JFrame {
 
-    private List<KahootClass> domande;
-    private static final String PASSWORD_FILE = "src/password.txt";
+    private List<KahootClass> domande; // Lista delle domande
+    private static final String PASSWORD_FILE = "src/password.txt"; // Percorso del file delle password
     private String hashedPassword ;
-            /**
-             * Creates new form FinestraAdmin
-             */
 
+    /**
+     * Creates new form FinestraAdmin
+     */
     public FinestraAdmin() {
         initComponents();
-        domande = new ArrayList<>(); // Inizializzazione della lista
-        setLocationRelativeTo(null);
-        domande = leggiDomandeDaFile();
+        domande = new ArrayList<>(); // Inizializzazione della lista delle domande
+        setLocationRelativeTo(null); // Centra la finestra sullo schermo
+        domande = leggiDomandeDaFile(); // Carica le domande dal file
     }
 
+    // Metodo per leggere le domande dal file
     private List<KahootClass> leggiDomandeDaFile() {
         List<KahootClass> domande = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader("src/domande1.txt"))) {
             String linea;
+            // Legge ogni riga del file e crea una domanda con le relative opzioni
             while ((linea = br.readLine()) != null) {
                 String domanda = linea;
                 String[] opzioni = new String[4];
                 for (int i = 0; i < 4; i++) {
-                    opzioni[i] = br.readLine();
+                    opzioni[i] = br.readLine(); // Legge le opzioni
                 }
-                int rispostaCorretta = Integer.parseInt(br.readLine());
-                domande.add(new KahootClass(domanda, new int[]{rispostaCorretta}, opzioni));
+                int rispostaCorretta = Integer.parseInt(br.readLine()); // Legge la risposta corretta
+                domande.add(new KahootClass(domanda, new int[]{rispostaCorretta}, opzioni)); // Aggiunge la domanda alla lista
             }
         } catch (IOException e) {
             System.out.println("Errore nella lettura del file: " + e.getMessage());
@@ -50,6 +52,7 @@ public class FinestraAdmin extends javax.swing.JFrame {
         return domande;
     }
 
+    // Metodo per aggiungere una nuova domanda
     private void aggiungiDomanda() {
         JTextField domandaField = new JTextField();
         JTextField[] opzioniFields = new JTextField[4];
@@ -57,6 +60,7 @@ public class FinestraAdmin extends javax.swing.JFrame {
             opzioniFields[i] = new JTextField();
         }
         JTextField rispostaField = new JTextField();
+        // Creazione della finestra di input per la nuova domanda
         Object[] message = {
             "Domanda:", domandaField,
             "Opzione 1:", opzioniFields[0],
@@ -73,17 +77,19 @@ public class FinestraAdmin extends javax.swing.JFrame {
                 opzioni[i] = opzioniFields[i].getText();
             }
             String rispostaText = rispostaField.getText();
+            // Controlla che la risposta corretta non sia vuota
             if (rispostaText.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "La risposta corretta non può essere vuota!", "Errore", JOptionPane.ERROR_MESSAGE);
-                return; // Exit the method if the input is invalid
+                return;
             }
             try {
                 int rispostaCorretta = Integer.parseInt(rispostaText);
+                // Controlla che l'indice della risposta corretta sia tra 0 e 3
                 if (rispostaCorretta < 0 || rispostaCorretta > 3) {
                     JOptionPane.showMessageDialog(this, "L'indice della risposta corretta deve essere tra 0 e 3!", "Errore", JOptionPane.ERROR_MESSAGE);
-                    return; // Exit the method if the input is invalid
+                    return;
                 }
-                // Aggiungi la domanda alla lista
+                // Aggiunge la domanda alla lista
                 domande.add(new KahootClass(domanda, new int[]{rispostaCorretta}, opzioni));
                 // Salva le domande nel file
                 salvaDomandeNelFile();
@@ -92,25 +98,28 @@ public class FinestraAdmin extends javax.swing.JFrame {
             }
         }
     }              
+
+    // Metodo per rimuovere una domanda dalla lista
     private void rimuoviDomanda(int index) {
         if (index >= 0 && index < domande.size()) {
-            domande.remove(index);
-            salvaDomandeNelFile();
+            domande.remove(index); // Rimuove la domanda
+            salvaDomandeNelFile(); // Salva la lista aggiornata nel file
         } else {
             JOptionPane.showMessageDialog(this, "Indice non valido!", "Errore", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    // Metodo per salvare le domande nel file
     private void salvaDomandeNelFile() {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("src/domande1.txt"))) {
             for (KahootClass domanda : domande) {
-                bw.write(domanda.getDomande());
+                bw.write(domanda.getDomande()); // Scrive la domanda
                 bw.newLine();
                 for (String opzione : domanda.getOpzioni()) {
-                    bw.write(opzione);
+                    bw.write(opzione); // Scrive le opzioni
                     bw.newLine();
                 }
-                bw.write(String.valueOf(domanda.getRispostaCorretta()));
+                bw.write(String.valueOf(domanda.getRispostaCorretta())); // Scrive la risposta corretta
                 bw.newLine();
             }
         } catch (IOException e) {
@@ -124,7 +133,7 @@ public class FinestraAdmin extends javax.swing.JFrame {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -203,30 +212,32 @@ public class FinestraAdmin extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // Apre la finestra per aggiungere una nuova domanda
         aggiungiDomanda();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }                                        
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // Chiede l'indice della domanda da rimuovere
         String indexStr = JOptionPane.showInputDialog(this, "Inserisci l'indice della domanda da rimuovere:");
         if (indexStr != null) {
             try {
                 int index = Integer.parseInt(indexStr);
+                // Rimuove la domanda dall'elenco
                 rimuoviDomanda(index);
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Input non valido!", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }                                        
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        // Chiude la finestra e torna alla finestra di login
         dispose();
         new UserRequest().setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }                                        
 
 
     /**
@@ -264,11 +275,11 @@ public class FinestraAdmin extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }
